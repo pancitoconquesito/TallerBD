@@ -1,56 +1,49 @@
 CREATE TABLE TipoOperacion(
-	idTipo INT NOT NULL,
-	nombre VARCHAR(20),
-	PRIMARY KEY (idTipo),
+	idTipo serial PRIMARY KEY,
+	nombre VARCHAR(20) NOT NULL,
 	CONSTRAINT u_nombreTipoOperacion UNIQUE (nombre)
 );
 
 CREATE TABLE Vendedor(
-	idVendedor INT NOT NULL,
-	nombre VARCHAR(30),
-	idSupervisor INT,
-	PRIMARY KEY (idVendedor)
+	idVendedor serial PRIMARY KEY,
+	nombre VARCHAR(30) NOT NULL,
+	idSupervisor INT
 );
 ALTER TABLE Vendedor ADD CONSTRAINT fk_vendedor
 FOREIGN KEY (idVendedor) REFERENCES Vendedor(idVendedor)
 ON DELETE cascade ON UPDATE cascade;
 
 CREATE TABLE CompradorArrendador(
-	rut INT NOT NULL,
-	nombre VARCHAR(20),
-	PRIMARY KEY (rut)
+	rut INT PRIMARY KEY,
+	nombre VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE Duenio(
-	rut INT NOT NULL,
-	nombre VARCHAR(30),
+	rut INT PRIMARY KEY,
+	nombre VARCHAR(30) NOT NULL,
 	celular INT NOT NULL,
-	email VARCHAR(30),
-	PRIMARY KEY (rut)
+	email VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE TipoVivienda(
-	idTipoVivienda INT NOT NULL,
-	nombre VARCHAR(20),
-	CONSTRAINT u_nombreVivienda UNIQUE (nombre),
-	PRIMARY KEY (idTipoVivienda)
+	idTipoVivienda serial PRIMARY KEY,
+	nombre VARCHAR(20) NOT NULL,
+	CONSTRAINT u_nombreVivienda UNIQUE (nombre)
 );
 
 CREATE TABLE Provincia(
-	idProvincia INT NOT NULL,
-	nombre VARCHAR(30),
-	CONSTRAINT u_nombreProvincia UNIQUE (nombre),
-	PRIMARY KEY (idProvincia)
+	idProvincia serial PRIMARY KEY,
+	nombre VARCHAR(30) NOT NULL,
+	CONSTRAINT u_nombreProvincia UNIQUE (nombre)
 );
 
 CREATE TABLE Vivienda(
-	idVivienda INT NOT NULL,
-	superficie INT NOT NULL,
+	idVivienda serial PRIMARY KEY,
+	superficie INT NOT NULL check(superficie > 0),
 	construido INT,
 	tipo INT NOT NULL,
 	provincia INT NOT NULL,
 	rutDuenio INT NOT NULL,
-	PRIMARY KEY (idVivienda),
 	CONSTRAINT fk_tipoVivienda FOREIGN KEY (tipo)
 	REFERENCES TipoVivienda(idTipoVivienda) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT fk_provincia FOREIGN KEY (provincia)
@@ -60,15 +53,14 @@ CREATE TABLE Vivienda(
 );
 
 CREATE TABLE Operacion(
-	referencia INT NOT NULL,
+	referencia serial PRIMARY KEY,
 	fechaAlta DATE NOT NULL,
-	precioVenta INT NOT NULL,
+	precioVenta INT NOT NULL check (precioVenta > 0),
 	fechaVenta DATE,
 	IDtipoOperacion INT NOT NULL,
 	idVendedor INT NOT NULL,
 	rutCompradorArrendador INT NOT NULL,
 	idVivienda INT NOT NULL,
-	PRIMARY KEY (referencia),
 	CONSTRAINT fk_tipoOperacion FOREIGN KEY (IDtipoOperacion)
 	REFERENCES TipoOperacion(idTipo) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT fk_vendedor FOREIGN KEY (idVendedor)
